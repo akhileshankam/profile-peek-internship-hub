@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { debugLog } from "@/utils/debug";
 
 export const useRecruiterData = () => {
   const { toast } = useToast();
@@ -18,7 +19,7 @@ export const useRecruiterData = () => {
 
     setProfileLoading(true);
     try {
-      console.log('Loading recruiter profile for user:', user.id);
+      debugLog('Loading recruiter profile for user:', user.id);
       
       const { data: profile, error } = await supabase
         .from('recruiter_profiles')
@@ -29,14 +30,14 @@ export const useRecruiterData = () => {
       if (error) {
         console.error('Error loading recruiter profile:', error);
         if (error.code === 'PGRST116') {
-          console.log('No recruiter profile found, user needs to create one');
+          debugLog('No recruiter profile found, user needs to create one');
           setRecruiterProfile(null);
         }
       } else if (profile) {
-        console.log('Successfully loaded recruiter profile:', profile);
+        debugLog('Successfully loaded recruiter profile:', profile);
         setRecruiterProfile(profile);
       } else {
-        console.log('No recruiter profile data found');
+        debugLog('No recruiter profile data found');
         setRecruiterProfile(null);
       }
     } catch (error) {
@@ -61,7 +62,7 @@ export const useRecruiterData = () => {
       if (studentsError) throw studentsError;
 
       if (studentsData) {
-        console.log("Students loaded with email field:", studentsData);
+        debugLog("Students loaded with email field:", studentsData);
         setStudents(studentsData);
       }
     } catch (error) {
@@ -79,7 +80,7 @@ export const useRecruiterData = () => {
   const loadBookmarkedStudents = async () => {
     if (!user) return;
 
-    console.log("Loading bookmarked students for user:", user.id);
+    debugLog("Loading bookmarked students for user:", user.id);
     
     try {
       const { data: recruiterProfile } = await supabase
@@ -89,11 +90,11 @@ export const useRecruiterData = () => {
         .single();
 
       if (!recruiterProfile) {
-        console.log("No recruiter profile found");
+        debugLog("No recruiter profile found");
         return;
       }
 
-      console.log("Recruiter profile found:", recruiterProfile.id);
+      debugLog("Recruiter profile found:", recruiterProfile.id);
 
       const { data: bookmarks, error: bookmarksError } = await supabase
         .from('student_bookmarks')
@@ -102,11 +103,11 @@ export const useRecruiterData = () => {
 
       if (bookmarksError) throw bookmarksError;
 
-      console.log("Bookmarks found:", bookmarks?.length, bookmarks);
+      debugLog("Bookmarks found:", bookmarks?.length, bookmarks);
 
       if (bookmarks && bookmarks.length > 0) {
         const studentUserIds = bookmarks.map(b => b.student_user_id);
-        console.log("Student user IDs to fetch:", studentUserIds);
+        debugLog("Student user IDs to fetch:", studentUserIds);
 
         const { data: studentsData, error: studentsError } = await supabase
           .from('student_profiles')
@@ -119,8 +120,8 @@ export const useRecruiterData = () => {
 
         if (studentsError) throw studentsError;
 
-        console.log("Student profiles found:", studentsData?.length);
-        console.log("Final bookmarked students with email:", studentsData?.length);
+        debugLog("Student profiles found:", studentsData?.length);
+        debugLog("Final bookmarked students with email:", studentsData?.length);
         
         if (studentsData) {
           setBookmarkedStudents(studentsData);
@@ -135,7 +136,7 @@ export const useRecruiterData = () => {
 
   useEffect(() => {
     if (user) {
-      console.log("User authenticated, loading recruiter data...", user);
+      debugLog("User authenticated, loading recruiter data...", user);
       loadRecruiterProfile();
       loadBookmarkedStudents();
       loadStudents();
