@@ -60,6 +60,15 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment variables
+
+Create a `.env` file in the project root with the following entries:
+
+```bash
+SUPABASE_URL=<your supabase url>
+SUPABASE_PUBLISHABLE_KEY=<your supabase key>
+```
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/7af690cb-50c4-43fd-8029-751f4eb91a37) and click on Share -> Publish.
