@@ -9,6 +9,7 @@ import { useEffect, useState as useStateHook } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ProfileForm from "@/components/recruiter/ProfileForm";
 import LILogo from "@/components/ui/LILogo";
+import { debugLog } from "@/utils/debug";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,13 +28,13 @@ const Navigation = () => {
 
   const loadRecruiterProfile = async () => {
     if (!user) {
-      console.log('Navigation: No user found');
+      debugLog('Navigation: No user found');
       return;
     }
 
     setLoading(true);
     try {
-      console.log('Navigation: Loading recruiter profile for user ID:', user.id);
+      debugLog('Navigation: Loading recruiter profile for user ID:', user.id);
       
       const { data: recruiterData, error } = await supabase
         .from('recruiter_profiles')
@@ -45,10 +46,10 @@ const Navigation = () => {
         console.error('Navigation: Error loading recruiter profile:', error);
         setRecruiterProfile(null);
       } else if (recruiterData) {
-        console.log('Navigation: Successfully loaded recruiter profile:', recruiterData);
+        debugLog('Navigation: Successfully loaded recruiter profile:', recruiterData);
         setRecruiterProfile(recruiterData);
       } else {
-        console.log('Navigation: No recruiter profile found');
+        debugLog('Navigation: No recruiter profile found');
         setRecruiterProfile(null);
       }
     } catch (error) {
@@ -80,7 +81,7 @@ const Navigation = () => {
   };
 
   const handleProfileUpdate = (updatedProfile: any) => {
-    console.log('Navigation: Profile updated:', updatedProfile);
+    debugLog('Navigation: Profile updated:', updatedProfile);
     // Immediately update the local state with the new data
     setRecruiterProfile({
       ...recruiterProfile,
@@ -96,7 +97,7 @@ const Navigation = () => {
 
   const handleProfileDialogOpen = () => {
     // Always reload profile data when opening the dialog
-    console.log('Navigation: Opening profile dialog, reloading data...');
+    debugLog('Navigation: Opening profile dialog, reloading data...');
     loadRecruiterProfile();
     setIsProfileOpen(true);
   };

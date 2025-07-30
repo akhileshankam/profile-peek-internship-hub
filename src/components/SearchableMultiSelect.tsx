@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, X, ChevronDown, Plus } from "lucide-react";
+import { debugLog } from "@/utils/debug";
 
 interface SearchableMultiSelectProps {
   options: string[];
@@ -126,9 +127,9 @@ const SearchableMultiSelect = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  console.log('Search term:', searchTerm);
-  console.log('Filtered options count:', filteredOptions.length);
-  console.log('Top 10 filtered options:', filteredOptions.slice(0, 10));
+  debugLog('Search term:', searchTerm);
+  debugLog('Filtered options count:', filteredOptions.length);
+  debugLog('Top 10 filtered options:', filteredOptions.slice(0, 10));
 
   return (
     <div ref={containerRef} className="relative">
